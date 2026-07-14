@@ -1,0 +1,57 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{04F6C494-9306-460A-8514-5D4095AA6F8A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CynoHub.Domain", "src\CynoHub.Domain\CynoHub.Domain.csproj", "{C1BC3D3E-C8DF-4E60-B324-836CAC688938}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CynoHub.Application", "src\CynoHub.Application\CynoHub.Application.csproj", "{CE6B38E2-F321-4ABA-8CEF-E80744D33596}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CynoHub.Infrastructure", "src\CynoHub.Infrastructure\CynoHub.Infrastructure.csproj", "{C775C2BF-0157-42C5-A119-6CFFE5B9D737}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CynoHub.Api", "src\CynoHub.Api\CynoHub.Api.csproj", "{0A9DCD20-31C3-4EC2-BD6D-82C368BA5368}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{D0365A71-D5C2-474B-B782-CA327062747C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CynoHub.UnitTests", "tests\CynoHub.UnitTests\CynoHub.UnitTests.csproj", "{D31BDE22-40D8-4732-90C1-2CA39805DC3E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C1BC3D3E-C8DF-4E60-B324-836CAC688938}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1BC3D3E-C8DF-4E60-B324-836CAC688938}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1BC3D3E-C8DF-4E60-B324-836CAC688938}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1BC3D3E-C8DF-4E60-B324-836CAC688938}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE6B38E2-F321-4ABA-8CEF-E80744D33596}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE6B38E2-F321-4ABA-8CEF-E80744D33596}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE6B38E2-F321-4ABA-8CEF-E80744D33596}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE6B38E2-F321-4ABA-8CEF-E80744D33596}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C775C2BF-0157-42C5-A119-6CFFE5B9D737}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C775C2BF-0157-42C5-A119-6CFFE5B9D737}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C775C2BF-0157-42C5-A119-6CFFE5B9D737}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C775C2BF-0157-42C5-A119-6CFFE5B9D737}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A9DCD20-31C3-4EC2-BD6D-82C368BA5368}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A9DCD20-31C3-4EC2-BD6D-82C368BA5368}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A9DCD20-31C3-4EC2-BD6D-82C368BA5368}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A9DCD20-31C3-4EC2-BD6D-82C368BA5368}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D31BDE22-40D8-4732-90C1-2CA39805DC3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D31BDE22-40D8-4732-90C1-2CA39805DC3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D31BDE22-40D8-4732-90C1-2CA39805DC3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D31BDE22-40D8-4732-90C1-2CA39805DC3E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C1BC3D3E-C8DF-4E60-B324-836CAC688938} = {04F6C494-9306-460A-8514-5D4095AA6F8A}
+		{CE6B38E2-F321-4ABA-8CEF-E80744D33596} = {04F6C494-9306-460A-8514-5D4095AA6F8A}
+		{C775C2BF-0157-42C5-A119-6CFFE5B9D737} = {04F6C494-9306-460A-8514-5D4095AA6F8A}
+		{0A9DCD20-31C3-4EC2-BD6D-82C368BA5368} = {04F6C494-9306-460A-8514-5D4095AA6F8A}
+		{D31BDE22-40D8-4732-90C1-2CA39805DC3E} = {D0365A71-D5C2-474B-B782-CA327062747C}
+	EndGlobalSection
+EndGlobal
