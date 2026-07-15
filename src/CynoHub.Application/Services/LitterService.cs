@@ -59,7 +59,8 @@ public sealed class LitterService(
         }
         catch (ConflictException)
         {
-            throw new ConflictException();
+            // TODO: add conflict logging
+            throw;
         }
 
         // TODO: Implement Transactional Outbox Pattern here
