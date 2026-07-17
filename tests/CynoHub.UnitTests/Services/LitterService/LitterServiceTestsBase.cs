@@ -27,7 +27,8 @@ public abstract class LitterServiceTestsBase
         Mock<IAuditLogRepository> auditRepo,
         Mock<IUnitOfWork> uow,
         Mock<INotificationService> notifications,
-        Mock<IBreederService> breederSvc
+        Mock<IBreederService> breederSvc,
+        Mock<IConflictRetryHandler> retryHandler
     ) CreateSut()
     {
         var litterRepo = new Mock<ILitterRepository>();
@@ -36,8 +37,12 @@ public abstract class LitterServiceTestsBase
         var uow = new Mock<IUnitOfWork>();
         var notifications = new Mock<INotificationService>();
         var breederSvc = new Mock<IBreederService>();
+        var retryHandler = new Mock<IConflictRetryHandler>();
         
         breederSvc.Setup(x => x.CurrentBreederId).Returns(BreederId);
+        retryHandler
+            .Setup(x => x.ExecuteAsync(It.IsAny<Func<CancellationToken, Task>>(), It.IsAny<CancellationToken>()))
+            .Returns<Func<CancellationToken, Task>, CancellationToken>((action, ct) => action(ct));
 
         uow.Setup(x => x.ExecuteInTransactionAsync(It.IsAny<Func<Task>>(), It.IsAny<CancellationToken>()))
             .Returns<Func<Task>, CancellationToken>(async (action, _) => await action());
@@ -48,9 +53,10 @@ public abstract class LitterServiceTestsBase
             auditRepo.Object,
             uow.Object,
             notifications.Object,
-            breederSvc.Object
+            breederSvc.Object,
+            retryHandler.Object
         );
 
-        return (svc, litterRepo, benefitRepo, auditRepo, uow, notifications, breederSvc);
+        return (svc, litterRepo, benefitRepo, auditRepo, uow, notifications, breederSvc, retryHandler);
     }
 }

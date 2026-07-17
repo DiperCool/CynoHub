@@ -11,7 +11,7 @@ public sealed class PublishAsyncTests : LitterServiceTestsBase
     [Fact]
     public async Task Publish_WhenLitterNotFound_ThrowsNotFoundException()
     {
-        var (svc, litterRepo, _, _, _, _, _) = CreateSut();
+        var (svc, litterRepo, _, _, _, _, _, _) = CreateSut();
         litterRepo.Setup(r => r.GetByIdAsync(LitterId, default)).ReturnsAsync((Litter?)null);
 
         await Assert.ThrowsAsync<NotFoundException>(() => svc.PublishAsync(LitterId));
@@ -20,7 +20,7 @@ public sealed class PublishAsyncTests : LitterServiceTestsBase
     [Fact]
     public async Task Publish_WhenBreederIsNotOwner_ThrowsForbiddenException()
     {
-        var (svc, litterRepo, _, _, _, _, _) = CreateSut();
+        var (svc, litterRepo, _, _, _, _, _, _) = CreateSut();
         var differentOwner = Guid.NewGuid();
         litterRepo
             .Setup(r => r.GetByIdAsync(LitterId, default))
@@ -37,7 +37,7 @@ public sealed class PublishAsyncTests : LitterServiceTestsBase
         LitterStatus wrongStatus
     )
     {
-        var (svc, litterRepo, _, _, _, _, _) = CreateSut();
+        var (svc, litterRepo, _, _, _, _, _, _) = CreateSut();
         litterRepo
             .Setup(r => r.GetByIdAsync(LitterId, default))
             .ReturnsAsync(MakeLitter(wrongStatus));
@@ -48,7 +48,7 @@ public sealed class PublishAsyncTests : LitterServiceTestsBase
     [Fact]
     public async Task Publish_WhenBenefitNotFound_ThrowsNotFoundException()
     {
-        var (svc, litterRepo, benefitRepo, _, _, _, _) = CreateSut();
+        var (svc, litterRepo, benefitRepo, _, _, _, _, _) = CreateSut();
         litterRepo.Setup(r => r.GetByIdAsync(LitterId, default)).ReturnsAsync(MakeLitter());
         benefitRepo
             .Setup(r => r.GetByBreederIdAsync(BreederId, default))
@@ -60,7 +60,7 @@ public sealed class PublishAsyncTests : LitterServiceTestsBase
     [Fact]
     public async Task Publish_WhenLimitExceeded_LogsAttemptAndThrowsDomainException()
     {
-        var (svc, litterRepo, benefitRepo, auditRepo, uow, _, _) = CreateSut();
+        var (svc, litterRepo, benefitRepo, auditRepo, uow, _, _, _) = CreateSut();
 
         litterRepo.Setup(r => r.GetByIdAsync(LitterId, default)).ReturnsAsync(MakeLitter());
         benefitRepo
@@ -90,7 +90,7 @@ public sealed class PublishAsyncTests : LitterServiceTestsBase
     [Fact]
     public async Task Publish_WhenLimitAvailable_PublishesAndIncreasesUsedCount()
     {
-        var (svc, litterRepo, benefitRepo, auditRepo, uow, notifications, _) = CreateSut();
+        var (svc, litterRepo, benefitRepo, auditRepo, uow, notifications, _, _) = CreateSut();
 
         var litter = MakeLitter();
         var benefit = MakeBenefit(freeLimit: 3, usedCount: 1);

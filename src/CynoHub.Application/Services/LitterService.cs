@@ -16,61 +16,76 @@ public sealed class LitterService(
     IAuditLogRepository auditLogRepository,
     IUnitOfWork unitOfWork,
     INotificationService notificationService,
-    IBreederService breederService
+    IBreederService breederService,
+    IConflictRetryHandler retryHandler
 ) : ILitterService
 {
     public async Task PublishAsync(Guid litterId, CancellationToken ct = default)
     {
-        var litter =
-            await litterRepository.GetByIdAsync(litterId, ct)
-            ?? throw new NotFoundException(nameof(Litter), litterId);
+        await retryHandler.ExecuteAsync(async cancellationToken =>
+            {
+                var litter =
+                    await litterRepository.GetByIdAsync(litterId, cancellationToken)
+                    ?? throw new NotFoundException(nameof(Litter), litterId);
 
-        var breederId = breederService.CurrentBreederId 
-            ?? throw new UnauthorizedException("Breeder authentication required.");
+                var breederId =
+                    breederService.CurrentBreederId
+                    ?? throw new UnauthorizedException("Breeder authentication required.");
 
-        litter.EnsureCanBePublishedBy(breederId);
+                litter.EnsureCanBePublishedBy(breederId);
 
-        var benefit =
-            await benefitRepository.GetByBreederIdAsync(breederId, ct)
-            ?? throw new NotFoundException(nameof(BreederBenefit), breederId);
+                var benefit =
+                    await benefitRepository.GetByBreederIdAsync(breederId, cancellationToken)
+                    ?? throw new NotFoundException(nameof(BreederBenefit), breederId);
 
-        if (!benefit.HasFreeSlots)
-        {
-            await LogAsync(litterId, AuditLogActions.PublishAttemptFailedLimitExceeded, ct);
-            await unitOfWork.SaveChangesAsync(ct);
-
-            throw new DomainException("Free limits exhausted.");
-        }
-
-        try
-        {
-            await unitOfWork.ExecuteInTransactionAsync(
-                async () =>
+                if (!benefit.HasFreeSlots)
                 {
-                    benefit.ConsumeSlot();
-                    benefitRepository.Update(benefit);
-
-                    litter.MarkPublished();
-                    litterRepository.Update(litter);
-
-                    await auditLogRepository.AddAsync(
-                        CreateLog(litterId, AuditLogActions.PublishedForFree),
-                        ct
+                    await LogAsync(
+                        litterId,
+                        AuditLogActions.PublishAttemptFailedLimitExceeded,
+                        cancellationToken
                     );
-                },
-                ct
-            );
-        }
-        catch (ConflictException)
-        {
-            // TODO: add conflict logging
-            throw;
-        }
+                    await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        // TODO: Implement Transactional Outbox Pattern here
-        // Sending notifications directly outside the transaction can lead to message loss if the process crashes after the DB commit.
-        // We should write an OutboxMessage to the DB inside the transaction above, and process it in a background worker.
-        await notificationService.SendPublishedNotificationAsync(breederId, litterId, ct);
+                    throw new DomainException("Free limits exhausted.");
+                }
+
+                try
+                {
+                    await unitOfWork.ExecuteInTransactionAsync(
+                        async () =>
+                        {
+                            benefit.ConsumeSlot();
+                            benefitRepository.Update(benefit);
+
+                            litter.MarkPublished();
+                            litterRepository.Update(litter);
+
+                            await auditLogRepository.AddAsync(
+                                CreateLog(litterId, AuditLogActions.PublishedForFree),
+                                cancellationToken
+                            );
+                        },
+                        cancellationToken
+                    );
+                }
+                catch (ConflictException)
+                {
+                    // TODO: add conflict logging
+                    throw;
+                }
+
+                // TODO: Implement Transactional Outbox Pattern here
+                // Sending notifications directly outside the transaction can lead to message loss if the process crashes after the DB commit.
+                // We should write an OutboxMessage to the DB inside the transaction above, and process it in a background worker.
+                await notificationService.SendPublishedNotificationAsync(
+                    breederId,
+                    litterId,
+                    cancellationToken
+                );
+            },
+            ct
+        );
     }
 
     public async Task<PagedResult<LitterDto>> GetPagedAsync(
@@ -81,7 +96,8 @@ public sealed class LitterService(
     {
         var p = pagination.Normalize();
 
-        var breederId = breederService.CurrentBreederId 
+        var breederId =
+            breederService.CurrentBreederId
             ?? throw new UnauthorizedException("Breeder authentication required.");
 
         var (items, totalCount) = await litterRepository.GetPagedByBreederAsync(

@@ -7,6 +7,10 @@ using CynoHub.Infrastructure.Repositories;
 using CynoHub.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using CynoHub.Infrastructure.Resilience;
+using Polly;
+using CynoHub.Domain.Exceptions;
+using Polly.Retry;
 
 namespace CynoHub.Infrastructure.Extensions;
 
@@ -32,6 +36,19 @@ public static class InfrastructureServiceCollectionExtensions
 
         // External services
         services.AddScoped<INotificationService, ConsoleNotificationService>();
+
+        // Resilience
+        services.AddScoped<IConflictRetryHandler, ConflictRetryHandler>();
+        services.AddResiliencePipeline("PublishLitter", builder =>
+        {
+            builder.AddRetry(new RetryStrategyOptions
+            {
+                ShouldHandle = new PredicateBuilder().Handle<ConflictException>(),
+                Delay = TimeSpan.FromMilliseconds(100),
+                MaxRetryAttempts = 3,
+                BackoffType = DelayBackoffType.Exponential
+            });
+        });
 
         return services;
     }

@@ -1,6 +1,8 @@
 using CynoHub.Application.Interfaces.Services;
 using CynoHub.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using CynoHub.Domain.Exceptions;
 
 namespace CynoHub.Application;
 

@@ -10,7 +10,7 @@ public sealed class GetPagedAsyncTests : LitterServiceTestsBase
     [Fact]
     public async Task GetPaged_ReturnsCorrectPagedResult()
     {
-        var (svc, litterRepo, _, _, _, _, _) = CreateSut();
+        var (svc, litterRepo, _, _, _, _, _, _) = CreateSut();
 
         var litters = new List<Litter>
         {
@@ -37,7 +37,7 @@ public sealed class GetPagedAsyncTests : LitterServiceTestsBase
     [Fact]
     public async Task GetPaged_FiltersByStatus_PassesCorrectFilterToRepository()
     {
-        var (svc, litterRepo, _, _, _, _, _) = CreateSut();
+        var (svc, litterRepo, _, _, _, _, _, _) = CreateSut();
 
         var filtered = new List<Litter> { MakeLitter(LitterStatus.Approved) };
 
@@ -57,7 +57,7 @@ public sealed class GetPagedAsyncTests : LitterServiceTestsBase
     [Fact]
     public async Task GetPaged_ClampsPageSizeToMax100()
     {
-        var (svc, litterRepo, _, _, _, _, _) = CreateSut();
+        var (svc, litterRepo, _, _, _, _, _, _) = CreateSut();
 
         litterRepo
             .Setup(r => r.GetPagedByBreederAsync(BreederId, (LitterStatus?)null, 1, 100, default))
@@ -77,7 +77,7 @@ public sealed class GetPagedAsyncTests : LitterServiceTestsBase
     [Fact]
     public async Task GetPaged_ClampsPageNumberToMinimum1()
     {
-        var (svc, litterRepo, _, _, _, _, _) = CreateSut();
+        var (svc, litterRepo, _, _, _, _, _, _) = CreateSut();
 
         litterRepo
             .Setup(r => r.GetPagedByBreederAsync(BreederId, (LitterStatus?)null, 1, 10, default))
