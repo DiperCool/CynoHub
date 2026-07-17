@@ -121,6 +121,54 @@ public static class InfrastructureServiceCollectionExtensions
                     breederId: testBreederId,
                     status: LitterStatus.Approved,
                     createdAt: DateTime.UtcNow.AddDays(-7)
+                ),
+                new Litter(
+                    id: Guid.Parse("00000000-0000-0000-0000-000000000017"),
+                    breederId: testBreederId,
+                    status: LitterStatus.Draft,
+                    createdAt: DateTime.UtcNow.AddDays(-10)
+                ),
+                new Litter(
+                    id: Guid.Parse("00000000-0000-0000-0000-000000000018"),
+                    breederId: testBreederId,
+                    status: LitterStatus.Draft,
+                    createdAt: DateTime.UtcNow.AddDays(-12)
+                ),
+                new Litter(
+                    id: Guid.Parse("00000000-0000-0000-0000-000000000019"),
+                    breederId: testBreederId,
+                    status: LitterStatus.Submitted,
+                    createdAt: DateTime.UtcNow.AddDays(-14)
+                ),
+                new Litter(
+                    id: Guid.Parse("00000000-0000-0000-0000-000000000020"),
+                    breederId: testBreederId,
+                    status: LitterStatus.Published,
+                    createdAt: DateTime.UtcNow.AddDays(-15)
+                ),
+                new Litter(
+                    id: Guid.Parse("00000000-0000-0000-0000-000000000021"),
+                    breederId: testBreederId,
+                    status: LitterStatus.Approved,
+                    createdAt: DateTime.UtcNow.AddDays(-18)
+                ),
+                new Litter(
+                    id: Guid.Parse("00000000-0000-0000-0000-000000000022"),
+                    breederId: testBreederId,
+                    status: LitterStatus.Approved,
+                    createdAt: DateTime.UtcNow.AddDays(-20)
+                ),
+                new Litter(
+                    id: Guid.Parse("00000000-0000-0000-0000-000000000023"),
+                    breederId: testBreederId,
+                    status: LitterStatus.Submitted,
+                    createdAt: DateTime.UtcNow.AddDays(-25)
+                ),
+                new Litter(
+                    id: Guid.Parse("00000000-0000-0000-0000-000000000024"),
+                    breederId: testBreederId,
+                    status: LitterStatus.Published,
+                    createdAt: DateTime.UtcNow.AddDays(-30)
                 )
             );
         }
