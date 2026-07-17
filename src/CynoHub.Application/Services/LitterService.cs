@@ -15,7 +15,6 @@ public sealed class LitterService(
     IBreederBenefitRepository benefitRepository,
     IAuditLogRepository auditLogRepository,
     IUnitOfWork unitOfWork,
-    INotificationService notificationService,
     IBreederService breederService,
     IConflictRetryHandler retryHandler
 ) : ILitterService
@@ -74,15 +73,6 @@ public sealed class LitterService(
                     // TODO: add conflict logging
                     throw;
                 }
-
-                // TODO: Implement Transactional Outbox Pattern here
-                // Sending notifications directly outside the transaction can lead to message loss if the process crashes after the DB commit.
-                // We should write an OutboxMessage to the DB inside the transaction above, and process it in a background worker.
-                await notificationService.SendPublishedNotificationAsync(
-                    breederId,
-                    litterId,
-                    cancellationToken
-                );
             },
             ct
         );

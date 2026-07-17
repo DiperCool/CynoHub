@@ -26,7 +26,6 @@ public abstract class LitterServiceTestsBase
         Mock<IBreederBenefitRepository> benefitRepo,
         Mock<IAuditLogRepository> auditRepo,
         Mock<IUnitOfWork> uow,
-        Mock<INotificationService> notifications,
         Mock<IBreederService> breederSvc,
         Mock<IConflictRetryHandler> retryHandler
     ) CreateSut()
@@ -35,7 +34,6 @@ public abstract class LitterServiceTestsBase
         var benefitRepo = new Mock<IBreederBenefitRepository>();
         var auditRepo = new Mock<IAuditLogRepository>();
         var uow = new Mock<IUnitOfWork>();
-        var notifications = new Mock<INotificationService>();
         var breederSvc = new Mock<IBreederService>();
         var retryHandler = new Mock<IConflictRetryHandler>();
         
@@ -52,11 +50,10 @@ public abstract class LitterServiceTestsBase
             benefitRepo.Object,
             auditRepo.Object,
             uow.Object,
-            notifications.Object,
             breederSvc.Object,
             retryHandler.Object
         );
 
-        return (svc, litterRepo, benefitRepo, auditRepo, uow, notifications, breederSvc, retryHandler);
+        return (svc, litterRepo, benefitRepo, auditRepo, uow, breederSvc, retryHandler);
     }
 }

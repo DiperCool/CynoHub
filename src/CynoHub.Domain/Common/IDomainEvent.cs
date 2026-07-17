@@ -1,0 +1,7 @@
+using System;
+
+namespace CynoHub.Domain.Common;
+
+public interface IDomainEvent
+{
+}

@@ -2,6 +2,7 @@ using CynoHub.Application.Interfaces.Services;
 using CynoHub.Domain.Entities;
 using CynoHub.Domain.Enums;
 using CynoHub.Domain.Interfaces.Repositories;
+using CynoHub.Infrastructure.Outbox;
 using CynoHub.Infrastructure.Persistence;
 using CynoHub.Infrastructure.Repositories;
 using CynoHub.Infrastructure.Services;
@@ -36,6 +37,7 @@ public static class InfrastructureServiceCollectionExtensions
 
         // External services
         services.AddScoped<INotificationService, ConsoleNotificationService>();
+        services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
 
         // Resilience
         services.AddScoped<IConflictRetryHandler, ConflictRetryHandler>();
@@ -49,6 +51,9 @@ public static class InfrastructureServiceCollectionExtensions
                 BackoffType = DelayBackoffType.Exponential
             });
         });
+
+        // Outbox Worker
+        services.AddHostedService<OutboxBackgroundService>();
 
         return services;
     }

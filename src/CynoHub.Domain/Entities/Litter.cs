@@ -1,9 +1,11 @@
+using CynoHub.Domain.Common;
 using CynoHub.Domain.Enums;
 using CynoHub.Domain.Exceptions;
+using CynoHub.Domain.Events;
 
 namespace CynoHub.Domain.Entities;
 
-public class Litter
+public class Litter : Entity
 {
     /// <summary>Required by EF Core — do not use directly.</summary>
     private Litter() { }
@@ -40,5 +42,9 @@ public class Litter
             );
     }
 
-    public void MarkPublished() => Status = LitterStatus.Published;
+    public void MarkPublished()
+    {
+        Status = LitterStatus.Published;
+        AddDomainEvent(new LitterPublishedEvent(Id, BreederId));
+    }
 }
