@@ -15,14 +15,18 @@ public sealed class LitterService(
     IBreederBenefitRepository benefitRepository,
     IAuditLogRepository auditLogRepository,
     IUnitOfWork unitOfWork,
-    INotificationService notificationService
+    INotificationService notificationService,
+    IBreederService breederService
 ) : ILitterService
 {
-    public async Task PublishAsync(Guid litterId, Guid breederId, CancellationToken ct = default)
+    public async Task PublishAsync(Guid litterId, CancellationToken ct = default)
     {
         var litter =
             await litterRepository.GetByIdAsync(litterId, ct)
             ?? throw new NotFoundException(nameof(Litter), litterId);
+
+        var breederId = breederService.CurrentBreederId 
+            ?? throw new UnauthorizedException("Breeder authentication required.");
 
         litter.EnsureCanBePublishedBy(breederId);
 
@@ -70,13 +74,15 @@ public sealed class LitterService(
     }
 
     public async Task<PagedResult<LitterDto>> GetPagedAsync(
-        Guid breederId,
         LitterStatus? status,
         PaginationQuery pagination,
         CancellationToken ct = default
     )
     {
         var p = pagination.Normalize();
+
+        var breederId = breederService.CurrentBreederId 
+            ?? throw new UnauthorizedException("Breeder authentication required.");
 
         var (items, totalCount) = await litterRepository.GetPagedByBreederAsync(
             breederId,

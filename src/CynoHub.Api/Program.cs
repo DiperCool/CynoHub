@@ -14,9 +14,14 @@ builder
         );
     });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.OperationFilter<CynoHub.Api.Swagger.RequireBreederHeaderFilter>();
+});
 
 // Register application & infrastructure layers
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<CynoHub.Application.Interfaces.Services.IBreederService, CynoHub.Api.Services.BreederService>();
 builder.Services.AddApplication();
 var connectionString =
     builder.Configuration.GetConnectionString("DefaultConnection") ?? "Data Source=cynohub.db";
@@ -34,6 +39,7 @@ if (app.Environment.IsDevelopment())
 
 // Global exception handling must be first
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseMiddleware<BreederAuthenticationMiddleware>();
 
 app.UseHttpsRedirection();
 app.MapControllers();

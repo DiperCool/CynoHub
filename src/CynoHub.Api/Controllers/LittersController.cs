@@ -5,10 +5,13 @@ using CynoHub.Domain.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+using CynoHub.Api.Attributes;
+
 namespace CynoHub.Api.Controllers;
 
 [ApiController]
 [Route("api/litters")]
+[RequireBreeder]
 public sealed class LittersController(ILitterService litterService) : ControllerBase
 {
     // POST /api/litters/{litterId}/publish
@@ -19,11 +22,10 @@ public sealed class LittersController(ILitterService litterService) : Controller
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     public async Task<IActionResult> Publish(
         Guid litterId,
-        [FromHeader(Name = "X-Breeder-Id")] Guid breederId,
         CancellationToken ct
     )
     {
-        await litterService.PublishAsync(litterId, breederId, ct);
+        await litterService.PublishAsync(litterId, ct);
         return Ok();
     }
 
@@ -31,13 +33,12 @@ public sealed class LittersController(ILitterService litterService) : Controller
     [HttpGet]
     [ProducesResponseType(typeof(PagedResult<LitterDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<PagedResult<LitterDto>>> GetList(
-        [FromHeader(Name = "X-Breeder-Id")] Guid breederId,
         [FromQuery] LitterStatus? status,
         [FromQuery] PaginationQuery pagination,
         CancellationToken ct = default
     )
     {
-        var result = await litterService.GetPagedAsync(breederId, status, pagination, ct);
+        var result = await litterService.GetPagedAsync(status, pagination, ct);
         return Ok(result);
     }
 }

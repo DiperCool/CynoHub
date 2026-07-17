@@ -10,7 +10,7 @@ public sealed class GetPagedAsyncTests : LitterServiceTestsBase
     [Fact]
     public async Task GetPaged_ReturnsCorrectPagedResult()
     {
-        var (svc, litterRepo, _, _, _, _) = CreateSut();
+        var (svc, litterRepo, _, _, _, _, _) = CreateSut();
 
         var litters = new List<Litter>
         {
@@ -23,7 +23,6 @@ public sealed class GetPagedAsyncTests : LitterServiceTestsBase
             .ReturnsAsync((litters.AsReadOnly() as IReadOnlyList<Litter>, litters.Count));
 
         var result = await svc.GetPagedAsync(
-            BreederId,
             null,
             new PaginationQuery { PageNumber = 1, PageSize = 10 }
         );
@@ -38,7 +37,7 @@ public sealed class GetPagedAsyncTests : LitterServiceTestsBase
     [Fact]
     public async Task GetPaged_FiltersByStatus_PassesCorrectFilterToRepository()
     {
-        var (svc, litterRepo, _, _, _, _) = CreateSut();
+        var (svc, litterRepo, _, _, _, _, _) = CreateSut();
 
         var filtered = new List<Litter> { MakeLitter(LitterStatus.Approved) };
 
@@ -47,7 +46,6 @@ public sealed class GetPagedAsyncTests : LitterServiceTestsBase
             .ReturnsAsync((filtered.AsReadOnly() as IReadOnlyList<Litter>, 1));
 
         var result = await svc.GetPagedAsync(
-            BreederId,
             LitterStatus.Approved,
             new PaginationQuery { PageNumber = 1, PageSize = 10 }
         );
@@ -59,14 +57,13 @@ public sealed class GetPagedAsyncTests : LitterServiceTestsBase
     [Fact]
     public async Task GetPaged_ClampsPageSizeToMax100()
     {
-        var (svc, litterRepo, _, _, _, _) = CreateSut();
+        var (svc, litterRepo, _, _, _, _, _) = CreateSut();
 
         litterRepo
             .Setup(r => r.GetPagedByBreederAsync(BreederId, (LitterStatus?)null, 1, 100, default))
             .ReturnsAsync((new List<Litter>().AsReadOnly() as IReadOnlyList<Litter>, 0));
 
         await svc.GetPagedAsync(
-            BreederId,
             null,
             new PaginationQuery { PageNumber = 1, PageSize = 999 }
         );
@@ -80,14 +77,13 @@ public sealed class GetPagedAsyncTests : LitterServiceTestsBase
     [Fact]
     public async Task GetPaged_ClampsPageNumberToMinimum1()
     {
-        var (svc, litterRepo, _, _, _, _) = CreateSut();
+        var (svc, litterRepo, _, _, _, _, _) = CreateSut();
 
         litterRepo
             .Setup(r => r.GetPagedByBreederAsync(BreederId, (LitterStatus?)null, 1, 10, default))
             .ReturnsAsync((new List<Litter>().AsReadOnly() as IReadOnlyList<Litter>, 0));
 
         await svc.GetPagedAsync(
-            BreederId,
             null,
             new PaginationQuery { PageNumber = -5, PageSize = 10 }
         );

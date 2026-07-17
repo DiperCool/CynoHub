@@ -25,6 +25,7 @@ public sealed class ExceptionHandlingMiddleware(
     {
         var (statusCode, title) = exception switch
         {
+            UnauthorizedException => (StatusCodes.Status401Unauthorized, "Unauthorized"),
             NotFoundException => (StatusCodes.Status404NotFound, "Not Found"),
             ForbiddenException => (StatusCodes.Status403Forbidden, "Forbidden"),
             ConflictException => (StatusCodes.Status409Conflict, "Concurrency Conflict"),
