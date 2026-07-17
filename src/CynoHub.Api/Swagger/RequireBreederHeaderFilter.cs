@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using CynoHub.Api.Attributes;
 using CynoHub.Api.Services;
 using Microsoft.OpenApi.Models;
@@ -11,14 +9,12 @@ public class RequireBreederHeaderFilter : IOperationFilter
 {
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
-        var hasRequireBreederAttribute = context.MethodInfo.DeclaringType?
-            .GetCustomAttributes(true)
-            .OfType<RequireBreederAttribute>()
-            .Any() == true
-            || context.MethodInfo
-            .GetCustomAttributes(true)
-            .OfType<RequireBreederAttribute>()
-            .Any();
+        var hasRequireBreederAttribute =
+            context
+                .MethodInfo.DeclaringType?.GetCustomAttributes(true)
+                .OfType<RequireBreederAttribute>()
+                .Any() == true
+            || context.MethodInfo.GetCustomAttributes(true).OfType<RequireBreederAttribute>().Any();
 
         if (!hasRequireBreederAttribute)
         {
@@ -27,17 +23,15 @@ public class RequireBreederHeaderFilter : IOperationFilter
 
         operation.Parameters ??= new List<OpenApiParameter>();
 
-        operation.Parameters.Add(new OpenApiParameter
-        {
-            Name = BreederService.BreederIdHeader,
-            In = ParameterLocation.Header,
-            Description = "ID of the breeder making the request",
-            Required = true,
-            Schema = new OpenApiSchema
+        operation.Parameters.Add(
+            new OpenApiParameter
             {
-                Type = "string",
-                Format = "uuid"
+                Name = BreederService.BreederIdHeader,
+                In = ParameterLocation.Header,
+                Description = "ID of the breeder making the request",
+                Required = true,
+                Schema = new OpenApiSchema { Type = "string", Format = "uuid" },
             }
-        });
+        );
     }
 }

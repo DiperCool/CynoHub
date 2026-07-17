@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using CynoHub.Application.Interfaces.Services;
-using CynoHub.Domain.Events;
 using CynoHub.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,13 +39,14 @@ public class OutboxBackgroundService(
         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var dispatcher = scope.ServiceProvider.GetRequiredService<IDomainEventDispatcher>();
 
-        var messages = await dbContext.OutboxMessages
-            .Where(m => m.ProcessedOn == null)
+        var messages = await dbContext
+            .OutboxMessages.Where(m => m.ProcessedOn == null)
             .OrderBy(m => m.OccurredOn)
             .Take(BatchSize)
             .ToListAsync(stoppingToken);
 
-        if (messages.Count == 0) return;
+        if (messages.Count == 0)
+            return;
 
         foreach (var message in messages)
         {

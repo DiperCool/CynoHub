@@ -1,4 +1,3 @@
-using System;
 using CynoHub.Domain.Common;
 
 namespace CynoHub.Domain.Events;

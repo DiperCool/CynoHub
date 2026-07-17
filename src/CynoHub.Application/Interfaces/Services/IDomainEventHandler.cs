@@ -1,10 +1,9 @@
-using System.Threading;
-using System.Threading.Tasks;
 using CynoHub.Domain.Common;
 
 namespace CynoHub.Application.Interfaces.Services;
 
-public interface IDomainEventHandler<in TEvent> where TEvent : IDomainEvent
+public interface IDomainEventHandler<in TEvent>
+    where TEvent : IDomainEvent
 {
     Task HandleAsync(TEvent domainEvent, CancellationToken cancellationToken);
 }

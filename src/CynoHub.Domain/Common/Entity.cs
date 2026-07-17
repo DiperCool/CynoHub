@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace CynoHub.Domain.Common;
 
 public abstract class Entity

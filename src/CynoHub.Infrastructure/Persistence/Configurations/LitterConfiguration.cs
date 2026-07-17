@@ -1,5 +1,4 @@
 using CynoHub.Domain.Entities;
-using CynoHub.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

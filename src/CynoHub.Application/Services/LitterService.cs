@@ -21,7 +21,8 @@ public sealed class LitterService(
 {
     public async Task PublishAsync(Guid litterId, CancellationToken ct = default)
     {
-        await retryHandler.ExecuteAsync(async cancellationToken =>
+        await retryHandler.ExecuteAsync(
+            async cancellationToken =>
             {
                 var litter =
                     await litterRepository.GetByIdAsync(litterId, cancellationToken)
@@ -49,30 +50,22 @@ public sealed class LitterService(
                     throw new DomainException("Free limits exhausted.");
                 }
 
-                try
-                {
-                    await unitOfWork.ExecuteInTransactionAsync(
-                        async () =>
-                        {
-                            benefit.ConsumeSlot();
-                            benefitRepository.Update(benefit);
+                await unitOfWork.ExecuteInTransactionAsync(
+                    async () =>
+                    {
+                        benefit.ConsumeSlot();
+                        benefitRepository.Update(benefit);
 
-                            litter.MarkPublished();
-                            litterRepository.Update(litter);
+                        litter.MarkPublished();
+                        litterRepository.Update(litter);
 
-                            await auditLogRepository.AddAsync(
-                                CreateLog(litterId, AuditLogActions.PublishedForFree),
-                                cancellationToken
-                            );
-                        },
-                        cancellationToken
-                    );
-                }
-                catch (ConflictException)
-                {
-                    // TODO: add conflict logging
-                    throw;
-                }
+                        await auditLogRepository.AddAsync(
+                            CreateLog(litterId, AuditLogActions.PublishedForFree),
+                            cancellationToken
+                        );
+                    },
+                    cancellationToken
+                );
             },
             ct
         );

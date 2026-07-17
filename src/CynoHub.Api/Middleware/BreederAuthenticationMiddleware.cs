@@ -1,8 +1,6 @@
-using System.Threading.Tasks;
 using CynoHub.Api.Attributes;
 using CynoHub.Application.Interfaces.Services;
 using CynoHub.Domain.Exceptions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 
 namespace CynoHub.Api.Middleware;
@@ -16,7 +14,9 @@ public class BreederAuthenticationMiddleware(RequestDelegate next)
 
         if (attribute is not null && !breederService.IsAuthenticated)
         {
-            throw new UnauthorizedException("Breeder authentication required. Missing or invalid X-Breeder-Id header.");
+            throw new UnauthorizedException(
+                "Breeder authentication required. Missing or invalid X-Breeder-Id header."
+            );
         }
 
         await next(context);

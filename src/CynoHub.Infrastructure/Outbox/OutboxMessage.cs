@@ -1,5 +1,3 @@
-using System;
-
 namespace CynoHub.Infrastructure.Outbox;
 
 public sealed class OutboxMessage

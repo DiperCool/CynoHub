@@ -1,6 +1,4 @@
 using CynoHub.Application.Interfaces.Services;
-using Microsoft.AspNetCore.Http;
-using System;
 
 namespace CynoHub.Api.Services;
 
@@ -23,9 +21,7 @@ public class BreederService(IHttpContextAccessor httpContextAccessor) : IBreeder
                 return null;
             }
 
-            return Guid.TryParse(headerValue, out var breederId)
-                ? breederId
-                : null;
+            return Guid.TryParse(headerValue, out var breederId) ? breederId : null;
         }
     }
 

@@ -1,5 +1,4 @@
 using CynoHub.Application.Interfaces.Services;
-using CynoHub.Application.Services;
 using CynoHub.Domain.Entities;
 using CynoHub.Domain.Enums;
 using CynoHub.Domain.Interfaces.Repositories;
@@ -36,13 +35,20 @@ public abstract class LitterServiceTestsBase
         var uow = new Mock<IUnitOfWork>();
         var breederSvc = new Mock<IBreederService>();
         var retryHandler = new Mock<IConflictRetryHandler>();
-        
+
         breederSvc.Setup(x => x.CurrentBreederId).Returns(BreederId);
         retryHandler
-            .Setup(x => x.ExecuteAsync(It.IsAny<Func<CancellationToken, Task>>(), It.IsAny<CancellationToken>()))
+            .Setup(x =>
+                x.ExecuteAsync(
+                    It.IsAny<Func<CancellationToken, Task>>(),
+                    It.IsAny<CancellationToken>()
+                )
+            )
             .Returns<Func<CancellationToken, Task>, CancellationToken>((action, ct) => action(ct));
 
-        uow.Setup(x => x.ExecuteInTransactionAsync(It.IsAny<Func<Task>>(), It.IsAny<CancellationToken>()))
+        uow.Setup(x =>
+                x.ExecuteInTransactionAsync(It.IsAny<Func<Task>>(), It.IsAny<CancellationToken>())
+            )
             .Returns<Func<Task>, CancellationToken>(async (action, _) => await action());
 
         var svc = new CynoHub.Application.Services.LitterService(

@@ -1,11 +1,9 @@
-using CynoHub.Application.Common.Pagination;
-using CynoHub.Application.Interfaces.Services;
-using CynoHub.Application.DTOs;
-using CynoHub.Domain.Enums;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-
 using CynoHub.Api.Attributes;
+using CynoHub.Application.Common.Pagination;
+using CynoHub.Application.DTOs;
+using CynoHub.Application.Interfaces.Services;
+using CynoHub.Domain.Enums;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CynoHub.Api.Controllers;
 
@@ -20,10 +18,7 @@ public sealed class LittersController(ILitterService litterService) : Controller
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-    public async Task<IActionResult> Publish(
-        Guid litterId,
-        CancellationToken ct
-    )
+    public async Task<IActionResult> Publish(Guid litterId, CancellationToken ct)
     {
         await litterService.PublishAsync(litterId, ct);
         return Ok();

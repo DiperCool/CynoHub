@@ -1,5 +1,9 @@
+using System.Text.Json.Serialization;
 using CynoHub.Api.Middleware;
+using CynoHub.Api.Services;
+using CynoHub.Api.Swagger;
 using CynoHub.Application;
+using CynoHub.Application.Interfaces.Services;
 using CynoHub.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,19 +13,17 @@ builder
     .Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        options.JsonSerializerOptions.Converters.Add(
-            new System.Text.Json.Serialization.JsonStringEnumConverter()
-        );
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.OperationFilter<CynoHub.Api.Swagger.RequireBreederHeaderFilter>();
+    c.OperationFilter<RequireBreederHeaderFilter>();
 });
 
 // Register application & infrastructure layers
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<CynoHub.Application.Interfaces.Services.IBreederService, CynoHub.Api.Services.BreederService>();
+builder.Services.AddScoped<IBreederService, BreederService>();
 builder.Services.AddApplication();
 var connectionString =
     builder.Configuration.GetConnectionString("DefaultConnection") ?? "Data Source=cynohub.db";
