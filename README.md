@@ -28,27 +28,22 @@ The solution follows Clean Architecture patterns:
 
 1. **Clone the repository and navigate to the root directory.**
 
-2. **Build the solution:**
+2. **Run the Backend:**
    ```bash
-   dotnet build
-   ```
-
-3. **Run the tests:**
-   ```bash
+   cd backend
    dotnet test
-   ```
-
-4. **Run the API:**
-   Navigate to the API project directory and run it. The SQLite database (`cynohub.db`) will be automatically created and seeded.
-   ```bash
    cd src/CynoHub.Api
    dotnet run
    ```
+   *(Backend Swagger will be available at `https://localhost:7052/swagger`)*
 
-5. **Explore the API:**
-   Once the application is running, open your browser and navigate to the Swagger UI at the default ports:
-   - HTTPS: `https://localhost:7052/swagger`
-   - HTTP: `http://localhost:5042/swagger`
+3. **Run the Frontend:**
+   ```bash
+   cd frontend
+   npm install
+   npm run dev
+   ```
+   *(Frontend UI will be available at `http://localhost:3000`)*
 
 ## Testing the Limits Logic
 
