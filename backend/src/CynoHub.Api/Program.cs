@@ -21,6 +21,16 @@ builder.Services.AddSwaggerGen(c =>
     c.OperationFilter<RequireBreederHeaderFilter>();
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 // Register application & infrastructure layers
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IBreederService, BreederService>();
@@ -44,6 +54,7 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseMiddleware<BreederAuthenticationMiddleware>();
 
 app.UseHttpsRedirection();
+app.UseCors();
 app.MapControllers();
 
 app.Run();
