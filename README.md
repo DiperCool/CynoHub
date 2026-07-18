@@ -40,6 +40,7 @@ The solution follows Clean Architecture patterns:
 3. **Run the Frontend:**
    ```bash
    cd frontend
+   cp .env.example .env
    npm install
    npm run dev
    ```
