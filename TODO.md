@@ -12,3 +12,5 @@ This file tracks technical debt and future architectural improvements for CynoHu
 ## Security
 - [ ] **Authentication & Authorization**: Replace the stub `X-Breeder-Id` header implementation with real JWT Bearer token authentication. Ensure `breederId` is securely extracted from `User.Claims` in the controllers.
 
+## Infrastructure & Deployment
+- [ ] **Docker & Docker Compose**: Containerize the application (backend and frontend) using Docker. Create a `docker-compose.yml` to orchestrate the services and any dependencies (like a database) for easy local development and deployment.
