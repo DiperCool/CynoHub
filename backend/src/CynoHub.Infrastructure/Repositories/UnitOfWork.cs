@@ -16,6 +16,7 @@ public sealed class UnitOfWork(AppDbContext db) : IUnitOfWork
         }
         catch (DbUpdateConcurrencyException)
         {
+            db.ChangeTracker.Clear();
             throw new ConflictException();
         }
     }
@@ -34,6 +35,7 @@ public sealed class UnitOfWork(AppDbContext db) : IUnitOfWork
         catch (DbUpdateConcurrencyException)
         {
             await tx.RollbackAsync(ct);
+            db.ChangeTracker.Clear();
             throw new ConflictException();
         }
         catch
