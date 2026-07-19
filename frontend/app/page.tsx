@@ -1,6 +1,15 @@
 import LitterList from "@/components/LitterList";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-export default function Home() {
+export default async function Home() {
+  const cookieStore = await cookies();
+  const breederId = cookieStore.get('breederId')?.value;
+
+  if (!breederId) {
+    redirect('/auth');
+  }
+
   return (
     <div className="relative min-h-screen w-full flex flex-col items-center py-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
       {/* Background Gradients */}
