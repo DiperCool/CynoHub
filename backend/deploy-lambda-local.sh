@@ -10,6 +10,14 @@ cd publish
 zip -r ../lambda.zip *
 cd ..
 
+echo "Creating DynamoDB table..."
+docker exec localstack-main awslocal dynamodb create-table \
+    --table-name LitterEventLogs \
+    --attribute-definitions AttributeName=Id,AttributeType=S \
+    --key-schema AttributeName=Id,KeyType=HASH \
+    --billing-mode PAY_PER_REQUEST \
+    --region us-east-1 || true
+
 echo "Creating/Updating Lambda function in LocalStack..."
 # Delete if exists to make it easier to re-deploy
 docker exec localstack-main awslocal lambda delete-function --function-name NotificationLambda --region us-east-1 || true
