@@ -3,7 +3,7 @@ using CynoHub.Domain.Events;
 
 namespace CynoHub.Application.EventHandlers;
 
-public class LitterPublishedEventHandler(INotificationService notificationService)
+public class LitterPublishedEventHandler(IEventPublisher eventPublisher)
     : IDomainEventHandler<LitterPublishedEvent>
 {
     public async Task HandleAsync(
@@ -11,7 +11,7 @@ public class LitterPublishedEventHandler(INotificationService notificationServic
         CancellationToken cancellationToken
     )
     {
-        await notificationService.SendPublishedNotificationAsync(
+        await eventPublisher.PublishLitterPublishedEventAsync(
             domainEvent.BreederId,
             domainEvent.LitterId,
             cancellationToken

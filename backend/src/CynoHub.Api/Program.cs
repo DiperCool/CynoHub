@@ -45,6 +45,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     await app.Services.SeedDatabaseAsync();
+    await app.Services.EnsureSqsQueueCreatedAsync();
     app.UseSwagger();
     app.UseSwaggerUI();
 }

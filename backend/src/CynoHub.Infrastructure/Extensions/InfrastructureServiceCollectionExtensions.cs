@@ -1,16 +1,16 @@
 using CynoHub.Application.Interfaces.Services;
 using CynoHub.Domain.Entities;
 using CynoHub.Domain.Enums;
+using CynoHub.Domain.Exceptions;
 using CynoHub.Domain.Interfaces.Repositories;
 using CynoHub.Infrastructure.Outbox;
 using CynoHub.Infrastructure.Persistence;
 using CynoHub.Infrastructure.Repositories;
+using CynoHub.Infrastructure.Resilience;
 using CynoHub.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using CynoHub.Infrastructure.Resilience;
 using Polly;
-using CynoHub.Domain.Exceptions;
 using Polly.Retry;
 
 namespace CynoHub.Infrastructure.Extensions;
@@ -36,21 +36,42 @@ public static class InfrastructureServiceCollectionExtensions
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         // External services
-        services.AddScoped<INotificationService, ConsoleNotificationService>();
         services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
+        services.AddScoped<IEventPublisher, SqsEventPublisher>();
+
+        services.AddSingleton<Amazon.SQS.IAmazonSQS>(sp =>
+        {
+            var configuration =
+                sp.GetRequiredService<Microsoft.Extensions.Configuration.IConfiguration>();
+            var serviceUrl = configuration["AWS:ServiceURL"] ?? "http://localhost:4566";
+            var region = configuration["AWS:Region"] ?? "us-east-1";
+
+            var sqsConfig = new Amazon.SQS.AmazonSQSConfig
+            {
+                ServiceURL = serviceUrl,
+                AuthenticationRegion = region,
+            };
+            // LocalStack uses dummy credentials
+            return new Amazon.SQS.AmazonSQSClient("test", "test", sqsConfig);
+        });
 
         // Resilience
         services.AddScoped<IConflictRetryHandler, ConflictRetryHandler>();
-        services.AddResiliencePipeline("PublishLitter", builder =>
-        {
-            builder.AddRetry(new RetryStrategyOptions
+        services.AddResiliencePipeline(
+            "PublishLitter",
+            builder =>
             {
-                ShouldHandle = new PredicateBuilder().Handle<ConflictException>(),
-                Delay = TimeSpan.FromMilliseconds(100),
-                MaxRetryAttempts = 3,
-                BackoffType = DelayBackoffType.Exponential
-            });
-        });
+                builder.AddRetry(
+                    new RetryStrategyOptions
+                    {
+                        ShouldHandle = new PredicateBuilder().Handle<ConflictException>(),
+                        Delay = TimeSpan.FromMilliseconds(100),
+                        MaxRetryAttempts = 3,
+                        BackoffType = DelayBackoffType.Exponential,
+                    }
+                );
+            }
+        );
 
         // Outbox Worker
         services.AddHostedService<OutboxBackgroundService>();
@@ -174,5 +195,23 @@ public static class InfrastructureServiceCollectionExtensions
         }
 
         await db.SaveChangesAsync();
+    }
+
+    public static async Task EnsureSqsQueueCreatedAsync(this IServiceProvider serviceProvider)
+    {
+        using var scope = serviceProvider.CreateScope();
+        var sqsClient = scope.ServiceProvider.GetRequiredService<Amazon.SQS.IAmazonSQS>();
+        var configuration =
+            scope.ServiceProvider.GetRequiredService<Microsoft.Extensions.Configuration.IConfiguration>();
+
+        var queueUrl = configuration["AWS:SqsQueueUrl"];
+        if (string.IsNullOrEmpty(queueUrl))
+            return;
+
+        var queueName = queueUrl.Split('/').Last();
+
+        await sqsClient.CreateQueueAsync(
+            new Amazon.SQS.Model.CreateQueueRequest { QueueName = queueName }
+        );
     }
 }

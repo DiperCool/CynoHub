@@ -14,3 +14,15 @@ node_modules/
 dist/
 build/
 .env*
+
+# Backend
+backend/publish/
+backend/lambda.zip
+
+# LocalStack
+.localstack*
+
+# AppSettings
+appsettings.json
+appsettings.*.json
+!appsettings.example.json
